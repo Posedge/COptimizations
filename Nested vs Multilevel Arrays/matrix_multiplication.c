@@ -8,6 +8,7 @@
 
 int main(){
   // Matrices as nested arrays
+  // Note that these have to be on the stack and of a constant size
   int nested1[MSIZE][MSIZE];
   int nested2[MSIZE][MSIZE];
   int nestedresult[MSIZE][MSIZE];
@@ -37,18 +38,28 @@ int main(){
     }
   }
 
+  printf("The optimizer is ");
+  #ifdef __OPTIMIZE__
+  printf("ON.\n");
+  #else
+  printf("OFF.\n");
+  #endif
+
   // Time matrix multiplication
   clock_t start_nested, end_nested, start_multi, end_multi, start_dyn, end_dyn;
 
   start_nested = clock();
-  // Not surre if putting this in a function is going to convert one array type to something else
+  // Not sure if putting this in a function is going to convert one array type to something else
   // will try like this first
   for(int m = 0; m < MSIZE; ++m){
     for(int n = 0; n < MSIZE; ++n){
       nestedresult[m][n] = 0;
       for(int i = 0; i < MSIZE; i++){
         nestedresult[m][n] += nested1[m][i] * nested2[i][n];
-        // repeatedly accessing the same array element
+        // This could be optimized by having a tempory variable for nestedresult[m][n]
+        // and setting the actual element at the end to it,
+        // but this is about measuring the access speed of an array.
+        // The optimizer does that probably anyway
       }
     }
   }
@@ -83,7 +94,7 @@ int main(){
     for(int n = 0; n < MSIZE; ++n){
       int result = nestedresult[m][n];
       assert(result == multiresult[m][n]);
-      assert(result = dynresult[MSIZE * m + n]);
+      assert(result == dynresult[MSIZE * m + n]);
     }
   }
 
