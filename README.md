@@ -12,3 +12,7 @@ A two-dimensional multilevel-array on the other hand requires two memory loads e
 A third way is to store everything in a regular dynamically allocated array, and offset column indizes by row length * row index. This should be a little slower than nested
 arrays, as the compiler cannot optimize the index and has to perform a regular multiplication every time.
 With this code you can compare the speed of the three methods. It also heavily depends on the optimization level.
+
+### Spatial Locality
+Try to measure how much accessing an array in a random order impacts the performance, as opposed to in order.
+
